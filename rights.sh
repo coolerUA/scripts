@@ -7,8 +7,6 @@ DEBUG="1" #for enable uncomment line // disable -> comment line
 
 for login in `ls -tr $users_path`; do
 
-##	chown $login:nobody $path_to/$login
-
  if [[ -n "$DEBUG" ]]; then echo; echo; echo; echo "Processing $login" >> $LOGFILE;fi
 
 ### DIR
@@ -23,6 +21,7 @@ echo -n;fi; done
 ###/DIR
 
 	chmod 711 $path_to/$login
+	chown $login:nobody $path_to/$login
 
 ### FILE
 find "$path_to/$login" -type f -print0 | while read -d $'\0' file; do 
