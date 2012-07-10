@@ -36,6 +36,7 @@ fi; done
 ### MISC PERMS
 	chmod 711 $path_to/$login
 	chown $login:nobody $search
+	chmod 750 $search
 ### /MISC PREMS
 
  if [[ -n "$DEBUG" ]]; then echo "Processing $login DONE" >> $LOGFILE;fi
