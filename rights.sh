@@ -1,9 +1,20 @@
 #!/bin/bash
 
-path_to="/home/cooler/wrk/cooler/git/scripts/home"
-users_path="/home/cooler/wrk/cooler/git/scripts/users"
-LOGFILE="/home/cooler/wrk/cooler/git/scripts/log"
+VERSION="0.3"
+
+renice -n +20 -p $$ 2>&1 >/dev/null
+
+set -o nounset
+set -o errexit
+ 
+SELF=$(basename $0)
+UPDATE_BASE=https://raw.github.com/zcooler/scripts/master/
+path_to="/home"
+users_path="/var/cpanel/users"
+LOGFILE="/var/log/rights/`date +%F--%H-%M`.log"
 DEBUG="1" #for enable uncomment line // disable -> comment line
+
+ if [[ -n "$DEBUG" ]]; then echo; echo; echo; echo "Starting @ `date +%F--%H-%M`" >> $LOGFILE;fi
 
 for login in `ls -tr $users_path`; do
 
@@ -34,8 +45,8 @@ fi; done
 ### /FILE
 
 ### MISC PERMS
-	chmod 711 $path_to/$login
 	chown $login:nobody $search
+	chmod 711 $path_to/$login
 	chmod 750 $search
 ### /MISC PREMS
 
@@ -44,7 +55,28 @@ fi; done
 
 echo -n;done
 
-
-
-
+runSelfUpdate() {
+  if ! wget --quiet --output-document="$0.tmp" $UPDATE_BASE/$SELF ; then
+    exit 1
+  fi
+  OCTAL_MODE=$(stat -c '%a' $SELF)
+  if ! chmod $OCTAL_MODE "$0.tmp" ; then
+    exit 1
+  fi
+  cat > updateScript.sh << EOF
+#!/bin/bash
+if mv "$0.tmp" "$0"; then
+  rm \$0
+else
+  echo "Failed!"
+fi
+EOF
+  exec /bin/bash updateScript.sh
+}
+SUM_LATEST=$(curl -s $UPDATE_BASE/$SELF | grep VERSION -m 1 |awk -F\" '{ print $2}')
+SUM_SELF=$(cat $0 | grep VERSION -m 1 |awk -F\" '{ print $2}')
+if [[ "$SUM_LATEST" != "$SUM_SELF" ]]; then
+     if [[ -n "$DEBUG" ]]; then echo "NOTE: New version available! Updating..." >> $LOGFILE;fi
+  runSelfUpdate
+fi
 
