@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.4"
+VERSION="0.5"
 
 renice -n +20 -p $$ 2>&1 >/dev/null
 
@@ -37,9 +37,9 @@ fi; done
 find "$search" -type f -print0 | while read -d $'\0' file; do 
 if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] ); then 
     stat=`stat -c %a "$file"`
-    if (( $stat != 664 )); then 
+    if (( $stat != 644 )); then 
 	     if [[ -n "$DEBUG" ]]; then echo "File $file has !644 perms!!" >> $LOGFILE;fi
-	chmod 664 "$file"; 
+	chmod 644 "$file"; 
     fi;
 fi; done 
 ### /FILE
