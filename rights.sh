@@ -32,7 +32,7 @@ search="$path_to/$login"
 
 ### DIR
 find "$search" -type d -print0 | while read -d $'\0' dir; do 
-if ( [[ $dir != *mail* ]] && [[ $dir != *etc* ]] && [[ $dir != *tmp* ]] && [[ $dir != *cgi-bin* ]] && [[ $dir != "/home/$login/virtualenv*" ]]  && [[ $dir != "/home/$login/ruby*" ]]); then 
+if ( [[ $dir != *mail* ]] && [[ $dir != *etc* ]] && [[ $dir != *tmp* ]] && [[ $dir != *cgi-bin* ]] && [[ $dir != "/home/$login/virtualenv*" ]]  && [[ $dir != "/home/$login/ruby*" ]] && [[ $dir != "/home/rvadmin*" ]]); then 
     stat=`stat -c %a "$dir"`
     if ( [[ $stat != $DIR_PERM ]] ); then 
 	     if [[ -n "$DEBUG" ]]; then echo "Directory $dir has ! $DIR_PERM perms!!" >> $LOGFILE;fi
@@ -43,7 +43,7 @@ fi; done
 
 ### FILE
 find "$search" -type f -print0 | while read -d $'\0' file; do 
-if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $file != "/home/$login/virtualenv*" ]]  && [[ $file != "/home/$login/ruby*" ]] ); then 
+if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $file != "/home/$login/virtualenv*" ]]  && [[ $file != "/home/$login/ruby*" ]]  && [[ $file != "/home/rvadmin*" ]]); then 
     stat=`stat -c %a "$file"`
     if ([[ $stat != $FILE_PERM ]]); then 
         if ( [[ $file != *.sh ]] || [[ $stat != $EXEC_PERM ]] ); then 
