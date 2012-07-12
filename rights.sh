@@ -43,7 +43,7 @@ fi; done
 
 ### FILE
 find "$search" -type f -print0 | while read -d $'\0' file; do 
-if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $dir != "/home/$login/virtualenv*" ]]  && [[ $dir != "/home/$login/ruby*" ]] ); then 
+if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $file != "/home/$login/virtualenv*" ]]  && [[ $file != "/home/$login/ruby*" ]] ); then 
     stat=`stat -c %a "$file"`
     if ([[ $stat != $FILE_PERM ]]); then 
         if ( [[ $file != *.sh ]] || [[ $stat != $EXEC_PERM ]] ); then 
