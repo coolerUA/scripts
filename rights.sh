@@ -1,18 +1,26 @@
 #!/bin/bash
 
-VERSION="0.5"
+VERSION="0.7"
+RPEV="0.6"
 
 renice -n +20 -p $$ 2>&1 >/dev/null
-
 set -o nounset
 set -o errexit
- 
+
+### VARIABLE DEFINE 
 SELF=$(basename $0)
 UPDATE_BASE=https://raw.github.com/zcooler/scripts/master/
 path_to="/home"
 users_path="/var/cpanel/users"
 LOGFILE="/var/log/rights/`date +%F--%H-%M`.log"
 DEBUG="1" #for enable uncomment line // disable -> comment line
+FILE_PERM="644"
+DIR_PERM="755"
+EXEC_PERM="750"
+
+
+### /VARIABLE DEFINE
+
 
  if [[ -n "$DEBUG" ]]; then echo; echo; echo; echo "Starting @ `date +%F--%H-%M`" >> $LOGFILE;fi
 
@@ -24,30 +32,33 @@ search="$path_to/$login/public_html"
 
 ### DIR
 find "$search" -type d -print0 | while read -d $'\0' dir; do 
-if ( [[ $dir != *mail* ]] && [[ $dir != *etc* ]] && [[ $dir != *tmp* ]] && [[ $dir != *cgi-bin* ]] ); then 
+if ( [[ $dir != *mail* ]] && [[ $dir != *etc* ]] && [[ $dir != *tmp* ]] && [[ $dir != *cgi-bin* ]] && [[ $dir != "/home/$login/virtualenv*" ]]  && [[ $dir != "/home/$login/ruby*" ]]); then 
     stat=`stat -c %a "$dir"`
-    if ( [[ $stat != 755 ]] ); then 
-	     if [[ -n "$DEBUG" ]]; then echo "Directory $dir has !755 perms!!" >> $LOGFILE;fi
-	chmod 755 "$dir";
+    if ( [[ $stat != $DIR_PERM ]] ); then 
+	     if [[ -n "$DEBUG" ]]; then echo "Directory $dir has ! $DIR_PERM perms!!" >> $LOGFILE;fi
+	chmod $DIR_PERM "$dir";
     fi;
 fi; done 
 ###/DIR
 
 ### FILE
 find "$search" -type f -print0 | while read -d $'\0' file; do 
-if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] ); then 
+if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $dir != "/home/$login/virtualenv*" ]]  && [[ $dir != "/home/$login/ruby*" ]] ); then 
     stat=`stat -c %a "$file"`
-    if (( $stat != 644 )); then 
-	     if [[ -n "$DEBUG" ]]; then echo "File $file has !644 perms!!" >> $LOGFILE;fi
-	chmod 644 "$file"; 
+    if ([[ $stat != $FILE_PERM ]]); then 
+        if ( [[ $file != *.sh ]] || [[ $stat != $EXEC_PERM ]] ); then 
+	    if [[ -n "$DEBUG" ]]; then echo "File $file has !$FILE_PERM || !$EXEC_PERM perms!!" >> $LOGFILE;fi
+	    chmod $FILE_PERM "$file";
+	fi
+	if ([[ -n "$DEBUG" ]] && [[ $file != *.sh ]]) ; then echo "File $file has !$FILE_PERM perms!!" >> $LOGFILE;fi
     fi;
 fi; done 
 ### /FILE
 
 ### MISC PERMS
-	chown $login:nobody $search
+	chown $login:nobody $path_to/$login/public_html
 	chmod 711 $path_to/$login
-	chmod 750 $search
+	chmod $EXEC_PERM $path_to/$login/public_html
 ### /MISC PREMS
 
  if [[ -n "$DEBUG" ]]; then echo "Processing $login DONE" >> $LOGFILE;fi
