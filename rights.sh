@@ -28,7 +28,7 @@ for login in `ls -tr $users_path`; do
 
  if [[ -n "$DEBUG" ]]; then echo; echo; echo; echo "Processing $login" >> $LOGFILE;fi
 
-search="$path_to/$login/public_html"
+search="$path_to/$login"
 
 ### DIR
 find "$search" -type d -print0 | while read -d $'\0' dir; do 
