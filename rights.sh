@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.7"
-RPEV="0.6"
+VERSION="0.8"
+RPEV="0.7"
 
 renice -n +20 -p $$ 2>&1 >/dev/null
 set -o nounset
