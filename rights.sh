@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.12"
-RPEV="0.11"
+VERSION="0.13"
+RPEV="0.12"
 
 renice -n +20 -p $$ 2>&1 >/dev/null
 #set -o nounset
@@ -43,7 +43,7 @@ fi; done
 
 ### FILE
 find "$search" -type f -print0 | while read -d $'\0' file; do 
-if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $file != /home/$login/virtualenv* ]]  && [[ $file != /home/$login/ruby* ]]  && [[ $file != /home/rvadmin* ]] && [[ $file != /home/$login/.* ]]); then 
+if ( [[ $file != *mail* ]] && [[ $file != *etc* ]] && [[ $file != *tmp* ]] && [[ $file != *cgi-bin* ]] && [[ $file != *.pl ]] && [[ $file != *.cgi ]] && [[ $file != *.wsgi ]] && [[ $file != *.sh ]] && [[ $file != /home/$login/virtualenv* ]]  && [[ $file != /home/$login/ruby* ]]  && [[ $file != /home/rvadmin* ]] && [[ $file != /home/$login/.* ]] && [[ $file != *.ftpquota ]]); then 
 #    file=`echo $file | sed -e "s/'/\\'/g"`
     stat=`stat -c %a "$file"`
     if ([[ $stat != $FILE_PERM ]]); then 
