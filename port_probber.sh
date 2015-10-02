@@ -8,7 +8,7 @@ SLEEP="2" # sleep between checks in seconds
 NC_TIMEOUT="2" # connect timeout in seconds
 
 
-if [ $1 = "-h" ] || [ $1 = "--help" ]
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ ! $1 ]
 then
 echo -e "Usage:\n $0 4.4.4.4 80 \n or \n $0 google.com 8080"
 exit
