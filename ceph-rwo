@@ -1,0 +1,19 @@
+#!/bin/bash
+# (c) zcooler
+
+datestr=$(date +"%Y-%m-%d %H:")
+minutestr=$(date +"%M")
+
+if [ "$minutestr" == 0 ]; then {
+    prev_minute="59"
+}
+else {
+prev_min=$(echo "$(date +"%M" )-1 " | bc)
+};
+fi
+
+grep_date=$datestr$prev_min":"
+
+
+
+grep "$(echo $grep_date)" /var/log/ceph/ceph.log | awk 'match($0, /([[:digit:]]+) kB\/s rd, ([[:digit:]]+) kB\/s wr, ([[:digit:]]+) op\/s/) {print substr($0, RSTART, RLENGTH)}'|awk '{print $1" "$4" "$7}'| awk 'BEGIN{FS=OFS=" "} {for (i=1;i<=NF;i++) a[i]+=$i} END{for (i=1;i<=NF;i++) printf (a[i]/NR) OFS; printf "\n"}' | awk '{print "graph_title Read write ops ceph\nread.label Read E\nwrite.label Write E\nops.label Ops E\nread.value "$1"\nwrite.value "$2"\nops.value "$3"\n" }'
